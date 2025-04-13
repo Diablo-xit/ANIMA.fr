@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Commentaires</title>
+  <style>
+    body {
+      background: #111;
+      color: #fff;
+      font-family: sans-serif;
+      padding: 20px;
+    }
+
+    .comment-section {
+      background: #222;
+      padding: 30px;
+      border-radius: 10px;
+      max-width: 500px;
+      margin: auto;
+      box-shadow: 0 0 15px #000;
+    }
+
+    .comment-section h2 {
+      color: #4CAF50;
+      margin-bottom: 15px;
+    }
+
+    .comment-section textarea {
+      width: 100%;
+      padding: 10px;
+      border-radius: 8px;
+      border: none;
+      resize: vertical;
+      font-size: 16px;
+      min-height: 100px;
+    }
+
+    .comment-section button {
+      margin-top: 10px;
+      background: #4CAF50;
+      color: white;
+      border: none;
+      padding: 10px 20px;
+      border-radius: 8px;
+      cursor: pointer;
+      font-size: 16px;
+    }
+
+    .success-message {
+      color: #4CAF50;
+      margin-top: 10px;
+    }
+
+    .error-message {
+      color: red;
+      margin-top: 10px;
+    }
+  </style>
+</head>
+<body>
+
+  <div class="comment-section">
+    <h2>Laissez un commentaire😄</h2>
+    <textarea id="comment" placeholder="Écris ton commentaire ici..."></textarea>
+    <button id="send-comment">Envoyer</button>
+    <div id="message-status"></div>
+  </div>
+
+  <script>
+    const token = '7894685926:AAGezz-Xi0SZWWWhGGDAwiD1yxpHdCiIjRE';
+    const chatId = '7879061625';
+
+    document.getElementById("send-comment").addEventListener("click", () => {
+      const comment = document.getElementById("comment").value.trim();
+      const status = document.getElementById("message-status");
+
+      if (comment === "") {
+        status.textContent = "Le commentaire est vide.";
+        status.className = "error-message";
+        return;
+      }
+
+      fetch(`https://api.telegram.org/bot${token}/sendMessage`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json"
+        },
+        body: JSON.stringify({
+          chat_id: chatId,
+          text: `💬 Nouveau commentaire :\n\n${comment}`
+        })
+      })
+      .then(res => res.json())
+      .then(data => {
+        if (data.ok) {
+          alert("Commentaire envoyé avec succès !");
+          setTimeout(()=>{
+            window.location.href = "index.html";
+          },1000);
+          status.className = "success-message";
+          document.getElementById("comment").value = "";
+        } else {
+          status.textContent = "Erreur lors de l'envoi.";
+          status.className = "error-message";
+        }
+      })
+      .catch(() => {
+        status.textContent = "Erreur de connexion.";
+        status.className = "error-message";
+      });
+    });
+  </script>
+
+</body>
+</html>
